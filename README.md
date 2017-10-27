@@ -1,5 +1,5 @@
-# homebridge-mi-gateway-fm
-[![npm version](https://badge.fury.io/js/homebridge-mi-gateway-fm.svg)](https://badge.fury.io/js/homebridge-mi-gateway-fm)
+# homebridge-mi-gateway-security
+[![npm version](https://badge.fury.io/js/homebridge-mi-gateway-security.svg)](https://badge.fury.io/js/homebridge-mi-gateway-security)
 
 XiaoMi Gateway Security plugin for HomeBridge.   
    
