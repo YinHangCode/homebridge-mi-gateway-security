@@ -58,6 +58,7 @@ MiGatewaySecurity.prototype = {
     },
 
     getServices: function() {
+        var that = this;
         var services = [];
 
         var infoService = new Service.AccessoryInformation();
@@ -70,34 +71,69 @@ MiGatewaySecurity.prototype = {
         var service = new Service.SecuritySystem(this.config['name']);
         var securitySystemCurrentStateCharacteristic = service.getCharacteristic(Characteristic.SecuritySystemCurrentState);
         var securitySystemTargetStateCharacteristic = service.getCharacteristic(Characteristic.SecuritySystemTargetState);
+        
         securitySystemCurrentStateCharacteristic
             .on('get', function(callback) {
-                this.device.call("get_arming", [null]).then(result => {
+                that.device.call("get_arming", []).then(result => {
+                    var value = null;
                     if(result[0] === 'on') {
-                        if(securitySystemCurrentStateCharacteristic.value == Characteristic.SecuritySystemCurrentState.STAY_ARM || 
-                            securitySystemCurrentStateCharacteristic.value == Characteristic.SecuritySystemCurrentState.DISARMED) {
-                            callback(null, Characteristic.SecuritySystemCurrentState.AWAY_ARM);
+                        if(securitySystemCurrentStateCharacteristic.value != Characteristic.SecuritySystemCurrentState.AWAY_ARM && 
+                            securitySystemCurrentStateCharacteristic.value != Characteristic.SecuritySystemCurrentState.NIGHT_ARM) {
+                            value = Characteristic.SecuritySystemCurrentState.AWAY_ARM;
                         } else {
-                            callback(null, securitySystemCurrentStateCharacteristic.value);
+                            value = securitySystemCurrentStateCharacteristic.value;
                         }
                     } else if(result[0] === 'off') {
-                        if(securitySystemCurrentStateCharacteristic.value == Characteristic.SecuritySystemCurrentState.AWAY_ARM || 
-                            securitySystemCurrentStateCharacteristic.value == Characteristic.SecuritySystemCurrentState.NIGHT_ARM) {
-                            callback(null, Characteristic.SecuritySystemCurrentState.DISARMED);
+                        if(securitySystemCurrentStateCharacteristic.value != Characteristic.SecuritySystemCurrentState.STAY_ARM && 
+                            securitySystemCurrentStateCharacteristic.value != Characteristic.SecuritySystemCurrentState.DISARMED) {
+                            value = Characteristic.SecuritySystemCurrentState.DISARMED;
                         } else {
-                            callback(null, securitySystemCurrentStateCharacteristic.value);
+                            value = securitySystemCurrentStateCharacteristic.value;
                         }
+                    }
+                    
+                    if(null != value) {
+                        callback(null, value);
                     } else {
-                        callback(null, new Error(result[0]));
+                        callback(new Error(result[0]));
                     }
                 }).catch(function(err) {
                     that.log.error("[MiGatewaySecurity][ERROR]get SecuritySystemCurrentState Error: " + err);
                     callback(err);
                 });
             }.bind(this));
+            
         securitySystemTargetStateCharacteristic
+            .on('get', function(callback) {
+                that.device.call("get_arming", []).then(result => {
+                    var value = null;
+                    if(result[0] === 'on') {
+                        if(securitySystemTargetStateCharacteristic.value != Characteristic.SecuritySystemTargetState.AWAY_ARM && 
+                            securitySystemTargetStateCharacteristic.value != Characteristic.SecuritySystemTargetState.NIGHT_ARM) {
+                            value = Characteristic.SecuritySystemTargetState.AWAY_ARM;
+                        } else {
+                            value = securitySystemTargetStateCharacteristic.value;
+                        }
+                    } else if(result[0] === 'off') {
+                        if(securitySystemTargetStateCharacteristic.value != Characteristic.SecuritySystemTargetState.STAY_ARM && 
+                            securitySystemTargetStateCharacteristic.value != Characteristic.SecuritySystemTargetState.DISARM) {
+                            value = Characteristic.SecuritySystemTargetState.DISARM;
+                        } else {
+                            value = securitySystemTargetStateCharacteristic.value;
+                        }
+                    }
+                    
+                    if(null != value) {
+                        callback(null, value);
+                    } else {
+                        callback(new Error(result[0]));
+                    }
+                }).catch(function(err) {
+                    that.log.error("[MiGatewaySecurity][ERROR]get SecuritySystemTargetState Error: " + err);
+                    callback(err);
+                });
+            }.bind(this))
             .on('set', function(value, callback) {
-                var that = this;
                 var val = "off";
                 if(Characteristic.SecuritySystemCurrentState.STAY_ARM == value) {
                     val = "off";
@@ -111,7 +147,7 @@ MiGatewaySecurity.prototype = {
                     val = "off";
                 }
                 
-                this.device.call("set_arming", [val]).then(result => {
+                that.device.call("set_arming", [val]).then(result => {
                     if(result[0] === "ok") {
                         callback(null);
                         securitySystemCurrentStateCharacteristic.updateValue(value);
@@ -119,7 +155,7 @@ MiGatewaySecurity.prototype = {
                         callback(new Error(result[0]));
                     }
                 }).catch(function(err) {
-                    that.log.error("[MiGatewayFM][ERROR]setFMStatus Error: " + err);
+                    that.log.error("[MiGatewaySecurity][ERROR]SecuritySystemTargetState Error: " + err);
                     callback(err);
                 });
             }.bind(this));
