@@ -20,8 +20,8 @@ If you are using Raspberry Pi, please read [Running-HomeBridge-on-a-Raspberry-Pi
 npm install -g miio homebridge-mi-gateway-security
 ```
 ## Instruction   
-Home, Away, Night is open.   
-Off is close.   
+Away, Night is open.   
+Home, Off is close.   
 
 ## Configuration   
 ```
@@ -54,6 +54,8 @@ miio --discover --sync
 Wait until you get output.   
 For more information about token, please refer to [OpenMiHome](https://github.com/OpenMiHome/mihome-binary-protocol) and [miio](https://github.com/aholstenson/miio).   
 ## Version Logs
+### 0.0.2
+1.change rule: Home is close.   
 ### 0.0.1
 1.support for gateway.   
 1.support for mi ac partner.   

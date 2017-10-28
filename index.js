@@ -73,14 +73,23 @@ MiGatewaySecurity.prototype = {
         securitySystemCurrentStateCharacteristic
             .on('get', function(callback) {
                 this.device.call("get_arming", [null]).then(result => {
-                    var val = result[0] === 'off' ? 
-                        Characteristic.SecuritySystemCurrentState.DISARMED : 
-                        (securitySystemCurrentStateCharacteristic.value == Characteristic.SecuritySystemCurrentState.DISARMED ? 
-                            Characteristic.SecuritySystemCurrentState.AWAY_ARM : 
-                            securitySystemCurrentStateCharacteristic.value
-                        );
-                    securitySystemTargetStateCharacteristic.updateValue(val);
-                    callback(null, val);
+                    if(result[0] === 'on') {
+                        if(securitySystemCurrentStateCharacteristic.value == Characteristic.SecuritySystemCurrentState.STAY_ARM || 
+                            securitySystemCurrentStateCharacteristic.value == Characteristic.SecuritySystemCurrentState.DISARMED) {
+                            callback(null, Characteristic.SecuritySystemCurrentState.AWAY_ARM);
+                        } else {
+                            callback(null, securitySystemCurrentStateCharacteristic.value);
+                        }
+                    } else if(result[0] === 'off') {
+                        if(securitySystemCurrentStateCharacteristic.value == Characteristic.SecuritySystemCurrentState.AWAY_ARM || 
+                            securitySystemCurrentStateCharacteristic.value == Characteristic.SecuritySystemCurrentState.NIGHT_ARM) {
+                            callback(null, Characteristic.SecuritySystemCurrentState.DISARMED);
+                        } else {
+                            callback(null, securitySystemCurrentStateCharacteristic.value);
+                        }
+                    } else {
+                        callback(null, new Error(result[0]));
+                    }
                 }).catch(function(err) {
                     that.log.error("[MiGatewaySecurity][ERROR]get SecuritySystemCurrentState Error: " + err);
                     callback(err);
@@ -91,7 +100,7 @@ MiGatewaySecurity.prototype = {
                 var that = this;
                 var val = "off";
                 if(Characteristic.SecuritySystemCurrentState.STAY_ARM == value) {
-                    val = "on";
+                    val = "off";
                 } else if(Characteristic.SecuritySystemCurrentState.AWAY_ARM == value) {
                     val = "on";
                 } else if(Characteristic.SecuritySystemCurrentState.NIGHT_ARM == value) {
