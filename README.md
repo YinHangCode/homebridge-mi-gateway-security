@@ -32,6 +32,17 @@ Home, Off is close.
     "token": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 }]
 ```
+If you want use Night instead of Away at some time, you can setting nightTime like this:   
+PS: It's not an automation, it's just select values when it close by other ways.   
+```
+"accessories": [{
+    "accessory": "MiGatewaySecurity",
+    "name": "MiGatewaySecurity",
+    "ip": "192.168.88.xx",
+    "token": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "nightTime": "22:00:00-7:00:00"
+}]
+```
 ## Get token
 Open command prompt or terminal. Run following command:   
 ```
@@ -54,6 +65,8 @@ miio --discover --sync
 Wait until you get output.   
 For more information about token, please refer to [OpenMiHome](https://github.com/OpenMiHome/mihome-binary-protocol) and [miio](https://github.com/aholstenson/miio).   
 ## Version Logs
+### 0.0.4
+1.add setting nightTime feature.   
 ### 0.0.3
 1.fixed bug that keep loading.   
 ### 0.0.2

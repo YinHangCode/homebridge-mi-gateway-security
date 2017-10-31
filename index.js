@@ -37,6 +37,22 @@ function isConfig(configFile, type, name) {
     return false;
 }
 
+Date.prototype.Format = function(fmt) {
+    var o = {
+        "M+": this.getMonth() + 1, //月份 
+        "d+": this.getDate(), //日 
+        "h+": this.getHours(), //小时 
+        "m+": this.getMinutes(), //分 
+        "s+": this.getSeconds(), //秒 
+        "q+": Math.floor((this.getMonth() + 3) / 3), //季度 
+        "S": this.getMilliseconds() //毫秒 
+    };
+    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+    for (var k in o)
+    if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+    return fmt;
+}
+
 function MiGatewaySecurity(log, config) {
     if(null == config) {
         return;
@@ -44,6 +60,18 @@ function MiGatewaySecurity(log, config) {
 
     this.log = log;
     this.config = config;
+    if(config.nightTime) {
+        try {
+            var nightTimeArr = config.nightTime.split("-");
+            this.nightTimeStart = new Date("2017-11-28 " + nightTimeArr[0]).Format("hhmmss");
+            this.nightTimeEnd = new Date("2017-11-28 " + nightTimeArr[1]).Format("hhmmss");
+            this.log.info("[MiGatewaySecurity][INFO]nightTime: " + nightTimeArr[0] + " - " + nightTimeArr[1]);
+        } catch(err) {
+            this.nightTimeStart = null;
+            this.nightTimeEnd = null;
+            this.log.error("[MiGatewaySecurity][ERROR]get nightTime Error: " + err);
+        }
+    }
     
     this.device = new miio.Device({
         address: config.ip,
@@ -79,7 +107,11 @@ MiGatewaySecurity.prototype = {
                     if(result[0] === 'on') {
                         if(securitySystemCurrentStateCharacteristic.value != Characteristic.SecuritySystemCurrentState.AWAY_ARM && 
                             securitySystemCurrentStateCharacteristic.value != Characteristic.SecuritySystemCurrentState.NIGHT_ARM) {
-                            value = Characteristic.SecuritySystemCurrentState.AWAY_ARM;
+                            if(that.isNight()) {
+                                value = Characteristic.SecuritySystemCurrentState.NIGHT_ARM;
+                            } else {
+                                value = Characteristic.SecuritySystemCurrentState.AWAY_ARM;
+                            }
                         } else {
                             value = securitySystemCurrentStateCharacteristic.value;
                         }
@@ -110,7 +142,11 @@ MiGatewaySecurity.prototype = {
                     if(result[0] === 'on') {
                         if(securitySystemTargetStateCharacteristic.value != Characteristic.SecuritySystemTargetState.AWAY_ARM && 
                             securitySystemTargetStateCharacteristic.value != Characteristic.SecuritySystemTargetState.NIGHT_ARM) {
-                            value = Characteristic.SecuritySystemTargetState.AWAY_ARM;
+                            if(that.isNight()) {
+                                value = Characteristic.SecuritySystemTargetState.NIGHT_ARM;
+                            } else {
+                                value = Characteristic.SecuritySystemTargetState.AWAY_ARM;
+                            }
                         } else {
                             value = securitySystemTargetStateCharacteristic.value;
                         }
@@ -160,8 +196,37 @@ MiGatewaySecurity.prototype = {
                 });
             }.bind(this));
         services.push(service);
-
+        
         return services;
+    },
+    
+    isNight: function() {
+        if(!this.nightTimeStart) {
+            return false;
+        }
+        
+        if(!this.nightTimeEnd) {
+            return false;
+        }
+        
+        var nowTime = parseInt(new Date().Format("hhmmss"));
+        var startTime = parseInt(this.nightTimeStart);
+        var endTime = parseInt(this.nightTimeEnd);
+        if(startTime > endTime) {
+            if(nowTime >= startTime || nowTime <= endTime) {
+                return true;
+            } else {
+                return false;
+            }
+        } else if(startTime < endTime) {
+            if(nowTime >= startTime && nowTime <= endTime) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        
+        return false;
     }
 }
 
