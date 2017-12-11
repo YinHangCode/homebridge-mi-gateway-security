@@ -100,6 +100,10 @@ MiGatewaySecurity.prototype = {
         var securitySystemCurrentStateCharacteristic = service.getCharacteristic(Characteristic.SecuritySystemCurrentState);
         var securitySystemTargetStateCharacteristic = service.getCharacteristic(Characteristic.SecuritySystemTargetState);
         
+        // default value is disarm
+        securitySystemTargetStateCharacteristic.value = Characteristic.SecuritySystemTargetState.DISARM;
+        securitySystemCurrentStateCharacteristic.value = Characteristic.SecuritySystemCurrentState.DISARMED;
+        
         securitySystemCurrentStateCharacteristic
             .on('get', function(callback) {
                 that.device.call("get_arming", []).then(result => {

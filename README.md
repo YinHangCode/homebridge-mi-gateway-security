@@ -65,6 +65,8 @@ miio --discover --sync
 Wait until you get output.   
 For more information about token, please refer to [OpenMiHome](https://github.com/OpenMiHome/mihome-binary-protocol) and [miio](https://github.com/aholstenson/miio).   
 ## Version Logs
+### 0.0.5
+1.set default state is off.   
 ### 0.0.4
 1.add setting nightTime feature.   
 ### 0.0.3
