@@ -29,9 +29,9 @@ Home, Off is close.
     "accessory": "MiGatewaySecurity",
     "ip": "192.168.88.xx",
     "token": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-    "securityName": "MiGatewaySecurity",
-    "securityDisable": false,
-    "switchName": "MiGatewaySecuritySwitch",
+    "name": "Security",
+    "disable": false,
+    "switchName": "Security Switch",
     "switchDisable": true
 }]
 ```
