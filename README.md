@@ -32,11 +32,18 @@ npm install -g miio homebridge-mi-gateway-security
 }]
 ```
 ## Get token
-Open command prompt or terminal. Run following command:   
+### Get token by miio2.db
+setup MiJia(MiHome) app in your android device or android virtual machine.   
+open MiJia(MiHome) app and login your account.   
+refresh device list and make sure device display in the device list.   
+get miio2.db(path: /data/data/com.xiaomi.smarthome/databases/miio2.db) file from your android device or android virtual machine.   
+open website [[Get MiIo Tokens By DataBase File](http://miio2.yinhh.com/)], upload miio2.db file and submit.    
+### Get token by network
+Open command prompt or terminal. Run following command:
 ```
 miio --discover
 ```
-Wait until you get output similar to this:   
+Wait until you get output similar to this:
 ```
 Device ID: xxxxxxxx   
 Model info: Unknown   
@@ -52,19 +59,20 @@ miio --discover --sync
 ```
 Wait until you get output.   
 For more information about token, please refer to [OpenMiHome](https://github.com/OpenMiHome/mihome-binary-protocol) and [miio](https://github.com/aholstenson/miio).   
+
 ## Version Logs
-### 0.1.0
+### 0.1.0 (2018-01-21)
 1.add switch control security state.   
 2.remove the superfluous security state.   
-### 0.0.5
+### 0.0.5 (2017-12-11)
 1.set default state is off.   
-### 0.0.4
+### 0.0.4 (2017-10-31)
 1.add setting nightTime feature.   
-### 0.0.3
+### 0.0.3 (2017-10-29)
 1.fixed bug that keep loading.   
-### 0.0.2
+### 0.0.2 (2017-10-28)
 1.change rule: Home is close.   
-### 0.0.1
+### 0.0.1 (2017-10-27)
 1.support for gateway.   
 1.support for mi ac partner.   
 1.support for aqara ac partner.   
