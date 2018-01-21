@@ -74,5 +74,5 @@ For more information about token, please refer to [OpenMiHome](https://github.co
 1.change rule: Home is close.   
 ### 0.0.1 (2017-10-27)
 1.support for gateway.   
-1.support for mi ac partner.   
-1.support for aqara ac partner.   
+2.support for mi ac partner.   
+3.support for aqara ac partner.   
