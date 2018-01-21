@@ -19,10 +19,6 @@ If you are using Raspberry Pi, please read [Running-HomeBridge-on-a-Raspberry-Pi
 ```
 npm install -g miio homebridge-mi-gateway-security
 ```
-## Instruction   
-Away, Night is open.   
-Home, Off is close.   
-
 ## Configuration   
 ```
 "accessories": [{
