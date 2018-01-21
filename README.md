@@ -27,20 +27,12 @@ Home, Off is close.
 ```
 "accessories": [{
     "accessory": "MiGatewaySecurity",
-    "name": "MiGatewaySecurity",
-    "ip": "192.168.88.xx",
-    "token": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-}]
-```
-If you want use Night instead of Away at some time, you can setting nightTime like this:   
-PS: It's not an automation, it's just select values when it close by other ways.   
-```
-"accessories": [{
-    "accessory": "MiGatewaySecurity",
-    "name": "MiGatewaySecurity",
     "ip": "192.168.88.xx",
     "token": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-    "nightTime": "22:00:00-7:00:00"
+    "securityName": "MiGatewaySecurity",
+    "securityDisable": false,
+    "switchName": "MiGatewaySecuritySwitch",
+    "switchDisable": true
 }]
 ```
 ## Get token
@@ -65,6 +57,9 @@ miio --discover --sync
 Wait until you get output.   
 For more information about token, please refer to [OpenMiHome](https://github.com/OpenMiHome/mihome-binary-protocol) and [miio](https://github.com/aholstenson/miio).   
 ## Version Logs
+### 0.1.0
+1.add switch control security state.   
+2.remove the superfluous security state.   
 ### 0.0.5
 1.set default state is off.   
 ### 0.0.4
