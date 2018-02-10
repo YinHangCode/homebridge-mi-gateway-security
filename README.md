@@ -17,7 +17,7 @@ If you are using Raspberry Pi, please read [Running-HomeBridge-on-a-Raspberry-Pi
 2. Make sure you can see HomeBridge in your iOS devices, if not, please go back to step 1.   
 3. Install packages.   
 ```
-npm install -g miio homebridge-mi-gateway-security
+npm install -g homebridge-mi-gateway-security
 ```
 ## Configuration   
 ```
@@ -61,6 +61,8 @@ Wait until you get output.
 For more information about token, please refer to [OpenMiHome](https://github.com/OpenMiHome/mihome-binary-protocol) and [miio](https://github.com/aholstenson/miio).   
 
 ## Version Logs
+### 0.1.1 (2018-02-10)
+1.update 'package.json'.   
 ### 0.1.0 (2018-01-21)
 1.add switch control security state.   
 2.remove the superfluous security state.   
